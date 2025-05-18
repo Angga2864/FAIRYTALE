@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fairytale Countdown</title>
+    <!-- Add Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=MedievalSharp&family=UnifrakturMaguntia&family=Henny+Penny&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'MedievalSharp', cursive;
+            background: radial-gradient(circle at center, #8a2be2, #4b0082, #191970);
+            color: #fff8dc;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            background-image: url('images/background-left.png'), url('images/background-right.png');
+            background-repeat: no-repeat;
+            background-position: left top, right bottom;
+            background-size: 200px, 250px;
+        }
+
+        h1 {
+            font-family: 'UnifrakturMaguntia', cursive;
+            font-size: 4rem;
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #e07ddd, 0 0 30px #9370db;
+            margin-bottom: 10px;
+            animation: pulse 1.5s infinite alternate, flicker 3s infinite;
+            letter-spacing: 3px;
+            margin-top: 0;
+            color: #ffd700;
+            background: linear-gradient(to right, #ff69b4, #da70d6, #9370db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom: 3px solid #ffd700;
+            padding-bottom: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(75, 0, 130, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(218, 112, 214, 0.7), inset 0 0 20px rgba(255, 215, 0, 0.4);
+            position: relative;
+            border: 3px solid #ffd700;
+            transition: all 0.5s ease;
+            background-image: url('images/container-pattern.png');
+            background-repeat: repeat;
+            background-size: 200px;
+            background-blend-mode: overlay;
+        }
+
+        .container:hover {
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.9), inset 0 0 25px rgba(255, 215, 0, 0.6);
+            transform: translateY(-5px);
+        }
+
+        .waterfall-container {
+            position: relative;
+            height: 500px;
+            margin: 40px auto;
+            width: 300px;
+        }
+
+        .glass {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 300px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 5px solid rgba(255, 215, 0, 0.7);
+            border-radius: 0 0 30px 30px;
+            overflow: hidden;
+            z-index: 2;
+            box-shadow: inset 0 0 30px rgba(255, 105, 180, 0.6), 0 0 30px rgba(218, 112, 214, 0.7);
+        }
+
+        .water {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, #9370db, #8a2be2);
+            transition: height 1s ease-out;
+            border-radius: 0 0 25px 25px;
+            box-shadow: inset 0 0 20px rgba(147, 112, 219, 0.8);
+        }
+
+        .water-fill {
+            position: absolute;
+            top: -10px;
+            width: 100%;
+            height: 20px;
+            background: rgba(218, 112, 214, 0.7);
+            border-radius: 50%;
+            filter: blur(5px);
+            animation: waterRipple 3s infinite;
+        }
+
+        .waterfall {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 200px;
+            background: linear-gradient(to bottom, transparent, rgba(218, 112, 214, 0.6));
+            border-radius: 0 0 50% 50%;
+            animation: waterfallFlow 2s infinite linear;
+            z-index: 1;
+        }
+
+        .percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #da70d6;
+            z-index: 3;
+            animation: textGlow 2s infinite alternate;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            background-color: rgba(218, 112, 214, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 80px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .countdown-item:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+            background-color: rgba(218, 112, 214, 0.4);
+        }
+
+        .countdown-number {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ffd700;
+            text-shadow: 0 0 5px rgba(255, 105, 180, 0.8);
+            animation: numberPulse 1s infinite;
+        }
+
+        .countdown-label {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: #fff8dc;
+        }
+
+        .progress-text {
+            font-family: 'MedievalSharp', cursive;
+            margin-top: 20px;
+            font-size: 1.3rem;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+            animation: textFlicker 3s infinite;
+            letter-spacing: 1px;
+            font-weight: bold;
+            color: #fff8dc;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #ff69b4;
+            border-radius: 50%;
+            animation: confettiFall 5s linear forwards;
+            z-index: 10;
+        }
+
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 215, 0, 0.7);
+            border-radius: 50%;
+            animation: bubbleRise linear infinite;
+        }
+
+        /* Fairy dust particles */
+        .fairy-dust {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .dust-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #ffd700 30%, transparent 70%);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        /* Music Player Styles */
+        .music-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(75, 0, 130, 0.7);
+            border-radius: 30px;
+            padding: 5px 15px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            border: 1px solid #ffd700;
+        }
+
+        .music-toggle {
+            cursor: pointer;
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 215, 0, 0.4);
+        }
+
+        .music-icon {
+            font-size: 20px;
+            color: #ffd700;
+        }
+
+        .music-icon.paused::after {
+            content: "";
+            position: absolute;
+            width: 4px;
+            height: 24px;
+            background: #ffd700;
+            transform: rotate(45deg);
+            left: 50%;
+            top: 8px;
+        }
+
+        .volume-control {
+            width: 100px;
+            display: flex;
+            align-items: center;
+        }
+
+        .volume-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 5px;
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .volume-slider:hover {
+            opacity: 1;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ff69b4;
+            cursor: pointer;
+            border: 1px solid #ffd700;
+        }
+
+        /* Current Date Display */
+        .current-date {
+            font-family: 'MedievalSharp', cursive;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+            color: #ff69b4;
+            animation: datePulse 5s infinite;
+            letter-spacing: 1px;
+        }
+
+        /* Magic Sparkle Animation */
+        .magic-sparkle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .sparkle-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(218,112,214,0) 70%);
+            animation: sparklePulse 2s infinite;
+            border-radius: 20px;
+        }
+
+        /* Fairy Flash */
+        .fairy-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(218, 112, 214, 0.2);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 999;
+            animation: fairyFlash 10s infinite;
+        }
+
+        /* Time Enchantment */
+        .time-enchantment {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff69b4;
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #da70d6;
+            opacity: 0;
+            z-index: 5;
+            animation: enchantmentPulse 1s infinite;
+            pointer-events: none;
+            letter-spacing: 3px;
+        }
+
+        /* Footer text */
+        .container p {
+            font-family: 'Henny Penny', cursive;
+            margin-top: 20px;
+            letter-spacing: 1px;
+            color: #ffd700;
+            font-size: 1.1rem;
+        }
+
+        /* Fairy wings decoration */
+        .fairy-wings {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-image: url('images/fairy-wings.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 3;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        .wings-left {
+            top: 20%;
+            left: 10%;
+            transform: rotate(-20deg);
+        }
+
+        .wings-right {
+            top: 20%;
+            right: 10%;
+            transform: rotate(20deg) scaleX(-1);
+        }
+
+        /* Reward Modal Styles */
+        .reward-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .reward-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .reward-content {
+            background: radial-gradient(circle, #4b0082, #191970);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 50px rgba(255, 105, 180, 0.8);
+            transform: scale(0.8);
+            transition: transform 0.5s ease;
+            animation: rewardGlow 3s infinite alternate;
+        }
+
+        .reward-modal.active .reward-content {
+            transform: scale(1);
+        }
+
+        .reward-title {
+            font-family: 'UnifrakturMaguntia', cursive;
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff69b4;
+            animation: pulse 1.5s infinite;
+        }
+
+        .reward-message {
+            font-family: 'Henny Penny', cursive;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: #fff8dc;
+            margin-bottom: 30px;
+        }
+
+        .reward-button {
+            background: linear-gradient(to right, #ff69b4, #da70d6);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        .reward-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
+        }
+
+        .reward-button:active {
+            transform: translateY(1px);
+        }
+
+        .reward-sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .reward-sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffd700;
+            border-radius: 50%;
+            animation: rewardSparkle 3s infinite;
+        }
+
+        /* Keyframes */
+        @keyframes waterfallFlow {
+            0% { height: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { height: 200px; opacity: 0; }
+        }
+
+        @keyframes waterRipple {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 10px #ff69b4, 0 0 20px #da70d6, 0 0 30px #9370db;
+            }
+            20%, 24%, 55% {
+                text-shadow: 0 0 5px #ff69b4, 0 0 15px #da70d6, 0 0 25px #9370db, 0 0 35px #8a2be2;
+            }
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes bubbleRise {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.7; }
+            100% { transform: translateY(-200px) translateX(20px); opacity: 0; }
+        }
+
+        @keyframes sparklePulse {
+            0% { transform: scale(0.9); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(0.9); opacity: 0.5; }
+        }
+
+        @keyframes fairyFlash {
+            0%, 40%, 42%, 44%, 46%, 48%, 50%, 100% { opacity: 0; }
+            41%, 43%, 45%, 47%, 49% { opacity: 0.2; }
+        }
+
+        @keyframes enchantmentPulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px #ff69b4, 0 0 20px #da70d6; }
+            100% { text-shadow: 0 0 15px #ff69b4, 0 0 30px #da70d6; }
+        }
+
+        @keyframes numberPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes textFlicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.7; }
+        }
+
+        @keyframes datePulse {
+            0%, 100% { color: #ff69b4; }
+            50% { color: #da70d6; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes rewardGlow {
+            0% { box-shadow: 0 0 50px rgba(255, 105, 180, 0.8); }
+            100% { box-shadow: 0 0 70px rgba(255, 215, 0, 0.9); }
+        }
+
+        @keyframes rewardSparkle {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+                padding-top: 20px;
+            }
+            .percentage {
+                font-size: 2.5rem;
+            }
+            .countdown-number {
+                font-size: 2rem;
+            }
+            .time-enchantment {
+                font-size: 1.8rem;
+            }
+            .current-date {
+                font-size: 1rem;
+            }
+            .progress-text {
+                font-size: 1.1rem;
+            }
+            .music-controls {
+                top: 15px;
+                right: 15px;
+                padding: 5px 10px;
+            }
+            .music-toggle {
+                width: 35px;
+                height: 35px;
+            }
+            .music-icon {
+                font-size: 18px;
+            }
+            .volume-control {
+                width: 80px;
+            }
+            .fairy-wings {
+                width: 60px;
+                height: 60px;
+            }
+            .reward-title {
+                font-size: 2rem;
+            }
+            .reward-message {
+                font-size: 1.2rem;
+            }
+            .reward-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fairy Flash Effect -->
+    <div class="fairy-flash"></div>
+    
+    <!-- Magic Sparkle Effect -->
+    <div class="magic-sparkle" id="magicSparkle">
+        <div class="sparkle-pulse"></div>
+    </div>
+    
+    <!-- Fairy wings decorations -->
+    <div class="fairy-wings wings-left"></div>
+    <div class="fairy-wings wings-right"></div>
+    
+    <!-- Time Enchantment -->
+    <div class="time-enchantment" id="timeEnchantment">THE MAGIC IS FADING!</div>
+    
+    <!-- Music Controls -->
+    <div class="music-controls">
+        <div class="music-toggle" id="musicToggle">
+            <div class="music-icon" id="musicIcon">✨</div>
+        </div>
+        <div class="volume-control">
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" id="volumeSlider">
+        </div>
+    </div>
+    
+    <audio id="bgMusic" loop>
+        <source src="audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="container">
+        <div class="current-date" id="currentDate"></div>
+        <br>
+        <br>
+        <br>
+        <div class="waterfall-container">
+            <div class="waterfall"></div>
+            <div class="glass">
+                <div class="water"></div>
+                <div class="water-fill"></div>
+                <div class="percentage">0%</div>
+                <div class="bubbles"></div>
+            </div>
+        </div>
+        
+        <div class="progress-text" id="progress-text"></div>
+        
+        <div class="countdown">
+            <div class="countdown-item">
+                <div class="countdown-number" id="days">00</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="hours">00</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+        <p>enchanted by <b>Angga.2864</b></p>
+    </div>
+
+    <!-- Fairy dust container -->
+    <div class="fairy-dust" id="fairyDust"></div>
+
+    <!-- Reward Modal -->
+    <div class="reward-modal" id="rewardModal">
+        <div class="reward-content">
+            <div class="reward-sparkles" id="rewardSparkles"></div>
+            <h1 class="reward-title">✨ Congratulations! ✨</h1>
+            <p class="reward-message">
+                Selamat telah menyelesaikan Magang MBKM ini dengan penuh keajaiban. 
+                <br><br>
+                Perjalananmu di negeri magang telah mencapai puncaknya, membawa pulang harta karun pengalaman dan kebijaksanaan. 
+                <br><br>
+                Selamat kembali ke Negeri Kenyataan dengan penuh kebahagiaan dan semangat baru untuk petualangan berikutnya!
+            </p>
+            <button class="reward-button" id="rewardButton">Terima Hadiah</button>
+        </div>
+    </div>
+
+    <script>
+        // Dates setup
+        const startDate = new Date('2025-03-13T00:00:00');
+        const endDate = new Date('2025-06-13T00:00:00');
+        const totalDuration = endDate - startDate;
+        
+        // DOM elements
+        const waterElement = document.querySelector('.water');
+        const percentageElement = document.querySelector('.percentage');
+        const progressTextElement = document.getElementById('progress-text');
+        const daysElement = document.getElementById('days');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+        const bubblesContainer = document.querySelector('.bubbles');
+        const currentDateElement = document.getElementById('currentDate');
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+        const bgMusic = document.getElementById('bgMusic');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const magicSparkle = document.getElementById('magicSparkle');
+        const timeEnchantment = document.getElementById('timeEnchantment');
+        const fairyDust = document.getElementById('fairyDust');
+        const rewardModal = document.getElementById('rewardModal');
+        const rewardButton = document.getElementById('rewardButton');
+        const rewardSparkles = document.getElementById('rewardSparkles');
+        
+        // Check if countdown has completed before
+        const hasCompleted = localStorage.getItem('countdownCompleted');
+        const now = new Date();
+        
+        // Initialize music player
+        let isMusicPlaying = false;
+        
+        // Set initial volume
+        bgMusic.volume = volumeSlider.value;
+        
+        // Volume control
+        volumeSlider.addEventListener('input', function() {
+            bgMusic.volume = this.value;
+        });
+        
+        musicToggle.addEventListener('click', function() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                musicIcon.classList.add('paused');
+            } else {
+                bgMusic.play();
+                musicIcon.classList.remove('paused');
+            }
+            isMusicPlaying = !isMusicPlaying;
+        });
+        
+        // Create reward sparkles
+        function createRewardSparkles() {
+            const colors = ['#ff69b4', '#da70d6', '#9370db', '#ffd700', '#fff8dc'];
+            
+            for (let i = 0; i < 30; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('reward-sparkle');
+                
+                // Random properties
+                const size = Math.random() * 8 + 4;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const duration = Math.random() * 2 + 1;
+                const delay = Math.random() * 3;
+                
+                sparkle.style.width = `${size}px`;
+                sparkle.style.height = `${size}px`;
+                sparkle.style.left = `${left}%`;
+                sparkle.style.top = `${top}%`;
+                sparkle.style.backgroundColor = color;
+                sparkle.style.animationDuration = `${duration}s`;
+                sparkle.style.animationDelay = `${delay}s`;
+                
+                rewardSparkles.appendChild(sparkle);
+            }
+        }
+        
+        // Show reward modal
+        function showReward() {
+            rewardModal.classList.add('active');
+            createRewardSparkles();
+            createConfetti();
+            
+            // Play celebration sound if needed
+            // celebrationSound.play();
+        }
+        
+        // Close reward modal
+        rewardButton.addEventListener('click', function() {
+            rewardModal.classList.remove('active');
+            localStorage.setItem('countdownCompleted', 'true');
+        });
+        
+        // Create fairy dust particles
+        function createFairyDust() {
+            const particleCount = 5;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('dust-particle');
+                
+                // Random properties
+                const size = Math.random() * 6 + 4;
+                const left = Math.random() * window.innerWidth;
+                const duration = Math.random() * 5 + 3;
+                const delay = Math.random() * 5;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}px`;
+                particle.style.top = `${window.innerHeight + 10}px`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                fairyDust.appendChild(particle);
+                
+                // Remove particle after animation
+                setTimeout(() => {
+                    particle.remove();
+                }, duration * 1000);
+            }
+        }
+        
+        // Update current date
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Create bubbles
+        function createBubbles() {
+            const bubbleCount = 10;
+            for (let i = 0; i < bubbleCount; i++) {
+                setTimeout(() => {
+                    const bubble = document.createElement('div');
+                    bubble.classList.add('bubble');
+                    
+                    // Random properties
+                    const size = Math.random() * 10 + 5;
+                    const left = Math.random() * 160 + 10;
+                    const duration = Math.random() * 4 + 3;
+                    const delay = Math.random() * 3;
+                    
+                    bubble.style.width = `${size}px`;
+                    bubble.style.height = `${size}px`;
+                    bubble.style.left = `${left}px`;
+                    bubble.style.bottom = '10px';
+                    bubble.style.animationDuration = `${duration}s`;
+                    bubble.style.animationDelay = `${delay}s`;
+                    
+                    bubblesContainer.appendChild(bubble);
+                    
+                    // Remove bubble after animation
+                    setTimeout(() => {
+                        bubble.remove();
+                    }, duration * 1000);
+                }, i * 300);
+            }
+        }
+        
+        // Update countdown and water level
+        function updateCountdown() {
+            const now = new Date();
+            
+            // Calculate percentage filled
+            let percentage = 0;
+            if (now >= endDate) {
+                percentage = 100;
+            } else if (now >= startDate) {
+                percentage = ((now - startDate) / totalDuration) * 100;
+            }
+            
+            // Update water level
+            const waterHeight = (percentage / 100) * 300;
+            waterElement.style.height = `${waterHeight}px`;
+            percentageElement.textContent = `${percentage.toFixed(1)}%`;
+            
+            // Update progress text
+            if (percentage >= 100) {
+                progressTextElement.textContent = "THE MAGIC IS COMPLETE! THE SPELL IS CAST!";
+                createConfetti();
+                magicSparkle.style.opacity = '0';
+                timeEnchantment.style.opacity = '0';
+                
+                // Show reward if it hasn't been shown before
+                if (!hasCompleted) {
+                    setTimeout(showReward, 2000);
+                }
+            } else {
+                const daysLeft = Math.floor((endDate - now) / (1000 * 60 * 60 * 24));
+                const hoursLeft = Math.floor((endDate - now) / (1000 * 60 * 60));
+                
+                // More intense warnings as time runs out
+                if (daysLeft <= 7) {
+                    magicSparkle.style.opacity = '1';
+                    
+                    if (hoursLeft <= 24) {
+                        timeEnchantment.style.opacity = '1';
+                        progressTextElement.textContent = `ONLY ${hoursLeft} HOURS LEFT! THE MAGIC FADES!`;
+                    } else {
+                        timeEnchantment.style.opacity = '0.5';
+                        progressTextElement.textContent = `ONLY ${daysLeft} DAYS LEFT! THE SPELL WEAKENS!`;
+                    }
+                } else {
+                    magicSparkle.style.opacity = '0';
+                    timeEnchantment.style.opacity = '0';
+                    progressTextElement.textContent = `${daysLeft} days until the magic is complete!`;
+                }
+            }
+            
+            // Update countdown numbers
+            if (now < endDate) {
+                const timeLeft = endDate - now;
+                
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                daysElement.textContent = days.toString().padStart(2, '0');
+                hoursElement.textContent = hours.toString().padStart(2, '0');
+                minutesElement.textContent = minutes.toString().padStart(2, '0');
+                secondsElement.textContent = seconds.toString().padStart(2, '0');
+                
+                // Make numbers pulse faster as time runs out
+                const timeCritical = timeLeft < 24 * 60 * 60 * 1000; // Less than 24 hours
+                document.querySelectorAll('.countdown-number').forEach(el => {
+                    el.style.animationDuration = timeCritical ? '0.5s' : '1s';
+                });
+            } else {
+                daysElement.textContent = '00';
+                hoursElement.textContent = '00';
+                minutesElement.textContent = '00';
+                secondsElement.textContent = '00';
+            }
+            
+            // Create bubbles if glass is filling
+            if (percentage > 0 && percentage < 100) {
+                createBubbles();
+            }
+        }
+        
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#ff69b4', '#da70d6', '#9370db', '#8a2be2', '#ffd700', '#fff8dc'];
+            
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    
+                    // Random properties
+                    const size = Math.random() * 10 + 5;
+                    const left = Math.random() * window.innerWidth;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    confetti.style.left = `${left}px`;
+                    confetti.style.backgroundColor = color;
+                    confetti.style.animationDuration = `${duration}s`;
+                    confetti.style.animationDelay = `${delay}s`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, duration * 1000);
+                }, i * 30);
+            }
+        }
+        
+        // Initial updates
+        updateCurrentDate();
+        updateCountdown();
+        
+        // Check if countdown is already completed on page load
+        if (now >= endDate && !hasCompleted) {
+            setTimeout(showReward, 1000);
+        } else if (hasCompleted) {
+            progressTextElement.textContent = "THE MAGIC IS COMPLETE! THE SPELL IS CAST!";
+            percentageElement.textContent = "100%";
+            waterElement.style.height = "300px";
+        }
+        
+        // Update every second
+        setInterval(updateCountdown, 1000);
+        setInterval(updateCurrentDate, 60000); // Update date every minute
+        
+        // Create initial bubbles
+        setInterval(createBubbles, 3000);
+        
+        // Create fairy dust particles
+        setInterval(createFairyDust, 500);
+    </script>
+</body>
+</html>
